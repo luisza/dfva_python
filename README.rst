@@ -1,12 +1,14 @@
 dfva cliente para python
 #############################
 
-Este cliente permite comunicarse con [DFVA](https://github.com/luisza/dfva) para proveer servicios de firma digital para Costa Rica a institutiones.
+Este cliente permite comunicarse con DFVA_ para proveer servicios de firma digital para Costa Rica a institutiones.
+
+.. _DFVA: https://github.com/luisza/dfva
 
 Instalación y configuración
 --------------------------------
 
-.. code::bash
+.. code:: bash
 
    git clone https://github.com/luisza/dfva_python.git
    cd dfva_python
@@ -14,7 +16,7 @@ Instalación y configuración
 
 Adicionalmente se crea un archivo de configuración en $HOME/.dfva_python/client.conf donde se ingresan los datos de la institución, una buena forma de crear este archivo es:
 
-.. code::python
+.. code:: python
 
    python 
    >>> from dfva_python.settings import Settings
@@ -48,7 +50,7 @@ Ejemplo de uso
 
 Si se desea autenticar y revisar estado de la autenticación
 
-.. code::python
+.. code:: python
 
     from dfva_python.client import Client
     c = Client()
@@ -59,14 +61,14 @@ Si se desea autenticar y revisar estado de la autenticación
 
 Si se desea revisar si un suscriptor está conectado
 
-.. code::python
+.. code:: python
 
     c.is_suscriptor_connected('04-0777-08888')
 
 
 Si se desea firmar y revisar estado de la firma.
 
-.. code::python
+.. code:: python
 
     DOCUMENT = '''IyEvYmluL2Jhc2gKCk5PRk9SQ0U9dHJ1ZQpBUFRfQ0FDSEU9IiIKCndoaWxlIGdldG9wdHMgY2h5
     IG9wdGlvbgpkbwogY2FzZSAiJHtvcHRpb259IgogaW4KIHkpIE5PRk9SQ0U9ZmFsc2U7OwogYykg
@@ -82,14 +84,14 @@ Si se desea firmar y revisar estado de la firma.
 
 Si se desea validar un certificado
 
-.. code::python
+.. code:: python
 
     c.validate(DOCUMENT, 'certificate')
 
 
 Si se desea validar un documento XML
 
-.. code::python
+.. code:: python
 
     c.validate(DOCUMENT, 'xml')
 
