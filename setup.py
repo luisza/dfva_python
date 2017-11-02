@@ -3,8 +3,6 @@ import os
 
 CLASSIFIERS = [
     'Environment :: Web Environment',
-	'Framework :: DFVA',
-	'Framework :: DFVA :: 1.0',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     'Operating System :: OS Independent',
@@ -15,6 +13,7 @@ CLASSIFIERS = [
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
 	'Topic :: Software Development :: Libraries :: Python Modules',
 	'Development Status :: 4 - Beta',
+    'Topic :: Security :: Cryptography',
 ]
 
 # allow setup.py to be run from any path

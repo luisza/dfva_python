@@ -8,6 +8,14 @@ Este cliente permite comunicarse con DFVA_ para proveer servicios de firma digit
 Instalación y configuración
 --------------------------------
 
+Instale mediante pypi:
+
+.. code:: bash
+
+    pip install dfva-python
+
+También se puede instalar utilizando el código fuente
+
 .. code:: bash
 
    git clone https://github.com/luisza/dfva_python.git
