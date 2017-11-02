@@ -12,7 +12,7 @@ Instalación y configuración
 
    git clone https://github.com/luisza/dfva_python.git
    cd dfva_python
-   pip install -r requirements.txt
+   python setup.py install
 
 Adicionalmente se crea un archivo de configuración en $HOME/.dfva_python/client.conf donde se ingresan los datos de la institución, una buena forma de crear este archivo es:
 
