@@ -163,7 +163,7 @@ class Client(object):
             "data": edata,
         }
 
-        if _type == 'certificado':
+        if _type == 'certificate':
             url = self.settings.VALIDATE_CERTIFICATE
         else:
             url = self.settings.VALIDATE_DOCUMENT

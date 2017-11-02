@@ -21,5 +21,6 @@ sign_resp=c.sign( '04-0212-0119', DOCUMENT.encode(), "resumen ejemplo", _format=
 print(sign_resp)
 c.check_sign(sign_resp['id_transaction'])
 
+c.validate(DOCUMENT, 'certificate')
 c.validate(DOCUMENT, 'xml')
 c.is_suscriptor_connected('04-0212-0119')
