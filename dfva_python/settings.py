@@ -12,6 +12,9 @@ class Institution:
     url_notify=None
     
 class Settings(dict):
+    
+    TIMEZONE = 'America/Costa_Rica'
+    ALGORITHM = 'sha512'
     FVA_SERVER_URL = 'http://localhost:8000'
     AUTHENTICATE_INSTITUTION = '/authenticate/institution/'
     CHECK_AUTHENTICATE_INSTITUTION = '/authenticate/%s/institution_show/'
@@ -30,6 +33,7 @@ class Settings(dict):
     PRIVATE_KEY=''
     URL_NOTIFY='N/D'
 
+    SETTINGS_LOADED=False
 
     def get_institution(self):
         institution = Institution()
@@ -40,4 +44,6 @@ class Settings(dict):
         institution.url_notify=self.URL_NOTIFY
         
         return institution    
-        
+    
+    def load_settings_from_file(self):
+        SETTINGS_LOADED=True

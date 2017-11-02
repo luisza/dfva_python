@@ -6,13 +6,15 @@ import pytz
 from dfva_python.settings import Settings
 
 class Client(object):
-    def __init__(self, timezone='America/Costa_Rica', settings=Settings()):
+    def __init__(self, settings=Settings()):
+        if not settings.SETTINGS_LOADED:
+            settings.load_settings_from_file()
         self.settings=settings
         self.institution = settings.get_institution()
-        self.tz= pytz.timezone(timezone)
+        self.tz= pytz.timezone(self.settings.TIMEZONE)
 
-    def authenticate(self, identification, algorithm = 'sha512'):
-
+    def authenticate(self, identification, algorithm = None):
+        algorithm = algorithm or self.settings.ALGORITHM 
         data = {
             'institution': str(self.institution.code),
             'notification_url': self.institution.url_notify or 'N/D',
@@ -40,8 +42,8 @@ class Client(object):
         return data
     
 
-    def sign(self, identification, document, resume, _format='xml', algorithm='sha512'):
-
+    def sign(self, identification, document, resume, _format='xml', algorithm=None):
+        algorithm = algorithm or self.settings.ALGORITHM
         data = {
             'institution': str(self.institution.code),
             'notification_url': self.institution.url_notify or 'N/D',
@@ -80,8 +82,8 @@ class Client(object):
         return data
 
 
-    def validate(self, document, _type, algorithm = 'sha512'):
-
+    def validate(self, document, _type, algorithm=None):
+        algorithm = algorithm or self.settings.ALGORITHM
         data = {
             'institution': str(self.institution.code),
             'notification_url': self.institution.url_notify or 'N/D',
