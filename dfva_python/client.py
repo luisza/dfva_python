@@ -1,19 +1,25 @@
+import json
+from dfva_python.rsa import encrypt, get_hash_sum, decrypt
+from datetime import datetime
+import requests
+import pytz
+from dfva_python.settings import Settings
 
+class Client(object):
+    def __init__(self, timezone='America/Costa_Rica', settings=Settings()):
+        self.settings=settings
+        self.institution = settings.get_institution()
+        self.tz= pytz.timezone(timezone)
 
-class Client():
-    def __init__(self, institution, url_notify):
-        self.institution = institution
-        self.url_notify = url_notify
-
-    def authenticate(self, identification):
+    def authenticate(self, identification, algorithm = 'sha512'):
 
         data = {
             'institution': str(self.institution.code),
-            'notification_url': self.url_notify.url or 'N/D',
+            'notification_url': self.institution.url_notify or 'N/D',
             'identification': identification,
-            'request_datetime': timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
         }
-        algorithm = 'sha512'
+        
         str_data = json.dumps(data)
         edata = encrypt(self.institution.server_public_key, str_data)
         hashsum = get_hash_sum(edata,  algorithm)
@@ -26,26 +32,26 @@ class Client():
             "data": edata,
         }
         result = requests.post(
-            settings.UCR_FVA_SERVER_URL + '/authenticate/institution/', json=params)
+            self.settings.UCR_FVA_SERVER_URL + self.settings.AUTHENTICATE_INSTITUTION, json=params)
 
         data = result.json()
-        data = decrypt(self.institution.private_key, data['data'], as_str=True)
+        data = decrypt(self.institution.private_key, data['data'])
 
         return data
     
 
-    def sign(self, identification, document, resume, format='xml', algorithm='sha512'):
+    def sign(self, identification, document, resume, _format='xml', algorithm='sha512'):
 
         data = {
             'institution': str(self.institution.code),
-            'notification_url': self.url_notify.url or 'N/D',
+            'notification_url': self.institution.url_notify or 'N/D',
             'document': document.decode(),
-            'format': format,
+            'format': _format,
             'algorithm_hash': algorithm,
             'document_hash': get_hash_sum(document,  algorithm),
             'identification': identification,
             'resumen': resume,
-            'request_datetime': timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
         }
 
         str_data = json.dumps(data)
@@ -65,11 +71,11 @@ class Client():
                    'Content-Type': 'application/json'}
 
         result = requests.post(
-            settings.UCR_FVA_SERVER_URL + '/sign/institution/', json=params, headers=headers)
+            self.settings.UCR_FVA_SERVER_URL + self.settings.SIGN_INSTUTION, json=params, headers=headers)
 
         # print(params)
         data = result.json()
-        data = decrypt(self.institution.private_key, data['data'], as_str=True)
+        data = decrypt(self.institution.private_key, data['data'])
 
         return data
 
@@ -78,9 +84,9 @@ class Client():
 
         data = {
             'institution': str(self.institution.code),
-            'notification_url': self.url_notify.url or 'N/D',
+            'notification_url': self.institution.url_notify or 'N/D',
             'document': document,
-            'request_datetime': timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
         }
 
         
@@ -98,13 +104,13 @@ class Client():
         }
 
         if _type == 'certificado':
-            url = '/validate/institution_certificate/'
+            url = self.settings.VALIDATE_CERTIFICATE
         else:
-            url = '/validate/institution_document/'
+            url = self.settings.VALIDATE_DOCUMENT
         headers = {'Accept': 'application/json',
                    'Content-Type': 'application/json'}
         result = requests.post(
-            settings.UCR_FVA_SERVER_URL + url, json=params, headers=headers)
+            self.settings.UCR_FVA_SERVER_URL + url, json=params, headers=headers)
         data = result.json()
-        data = decrypt(self.institution.private_key, data['data'], as_str=True)
+        data = decrypt(self.institution.private_key, data['data'])
         return data
