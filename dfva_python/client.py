@@ -70,7 +70,7 @@ class Client(object):
         data = decrypt(self.institution.private_key, data['data'])
         return data    
 
-    def sign(self, identification, document, resume, _format='xml', algorithm=None):
+    def sign(self, identification, document, resume, _format='xml_cofirma', algorithm=None):
         algorithm = algorithm or self.settings.ALGORITHM
         if type(document) == str:
             document = document.encode()
@@ -140,7 +140,7 @@ class Client(object):
         return data
 
 
-    def validate(self, document, _type, algorithm=None):
+    def validate(self, document, _type, algorithm=None, _format=None):
         algorithm = algorithm or self.settings.ALGORITHM
         data = {
             'institution': self.institution.code,
@@ -148,6 +148,9 @@ class Client(object):
             'document': document,
             'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
         }
+
+        if _format is not None:
+            data['format']=_format
 
         
         str_data = json.dumps(data)

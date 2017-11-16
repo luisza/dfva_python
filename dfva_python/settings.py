@@ -29,8 +29,8 @@ class Settings(dict):
     VALIDATE_DOCUMENT = '/validate/institution_document/'
     SUSCRIPTOR_CONNECTED = '/validate/institution_suscriptor_connected/'
 
-    SUPPORTED_SIGN_FORMAT = ['xml', 'odf', 'msoffice']
-    SUPPORTED_VALIDATE_FORMAT = ['certificate', 'xml', 'odf', 'msoffice']
+    SUPPORTED_SIGN_FORMAT = ['xml_cofirma', 'xml_contrafirma', 'odf', 'msoffice']
+    SUPPORTED_VALIDATE_FORMAT = ['certificate', 'cofirma', 'contrafirma', 'odf', 'msoffice']
 
     SERVER_PUBLIC_KEY=''
     PUBLIC_CERTIFICATE=''
