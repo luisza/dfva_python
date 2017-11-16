@@ -70,6 +70,35 @@ class Client(object):
         data = decrypt(self.institution.private_key, data['data'])
         return data    
 
+
+    def autenticate_delete(self, code, algorithm=None):
+        algorithm = algorithm or self.settings.ALGORITHM
+        data = {
+            'institution': self.institution.code,
+            'notification_url': self.institution.url_notify or 'N/D',
+            'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+        str_data = json.dumps(data)
+        edata =  encrypt(self.institution.server_public_key, str_data)
+        hashsum = get_hash_sum(edata,  algorithm)
+        edata = edata.decode()
+        params = {
+            "data_hash": hashsum,
+            "algorithm": algorithm,
+            "public_certificate": self.institution.public_certificate,
+            'institution': self.institution.code,
+            "data": edata,
+        }
+        result = requests.post(
+            self.settings.DFVA_SERVER_URL +
+            self.settings.AUTHENTICATE_DELETE % (code,), json=params)
+
+        data = result.json()
+        data = decrypt(self.institution.private_key, data['data'])
+        return data['result'] if 'result' in data else False
+
+
     def sign(self, identification, document, resume, _format='xml_cofirma', algorithm=None):
         algorithm = algorithm or self.settings.ALGORITHM
         if type(document) == str:
@@ -139,6 +168,32 @@ class Client(object):
         data = decrypt(self.institution.private_key, data['data'])
         return data
 
+    def sign_delete(self, code, algorithm=None):
+        algorithm = algorithm or self.settings.ALGORITHM
+        data = {
+            'institution': self.institution.code,
+            'notification_url': self.institution.url_notify or 'N/D',
+            'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+        str_data = json.dumps(data)
+        edata = encrypt(self.institution.server_public_key, str_data)
+        hashsum = get_hash_sum(edata,  algorithm)
+        edata = edata.decode()
+        params = {
+            "data_hash": hashsum,
+            "algorithm": algorithm,
+            "public_certificate": self.institution.public_certificate,
+            'institution': self.institution.code,
+            "data": edata,
+        }
+        result = requests.post(
+            self.settings.DFVA_SERVER_URL +
+            self.settings.SIGN_DELETE % (code,), json=params)
+
+        data = result.json()
+        data = decrypt(self.institution.private_key, data['data'])
+        return data['result'] if 'result' in data else False
 
     def validate(self, document, _type, algorithm=None, _format=None):
         algorithm = algorithm or self.settings.ALGORITHM

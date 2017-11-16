@@ -23,8 +23,10 @@ class Settings(dict):
     DFVA_SERVER_URL = 'http://localhost:8000'
     AUTHENTICATE_INSTITUTION = '/authenticate/institution/'
     CHECK_AUTHENTICATE_INSTITUTION = '/authenticate/%s/institution_show/'
+    AUTHENTICATE_DELETE = '/authenticate/%s/institution_delete/'
     SIGN_INSTUTION = '/sign/institution/'
     CHECK_SIGN_INSTITUTION = '/sign/%s/institution_show/'
+    SIGN_DELETE = '/sign/%s/institution_delete/'
     VALIDATE_CERTIFICATE = '/validate/institution_certificate/'
     VALIDATE_DOCUMENT = '/validate/institution_document/'
     SUSCRIPTOR_CONNECTED = '/validate/institution_suscriptor_connected/'
@@ -89,8 +91,10 @@ class Settings(dict):
             'DFVA_SERVER_URL' : self.DFVA_SERVER_URL,
             'AUTHENTICATE_INSTITUTION' : self.AUTHENTICATE_INSTITUTION,
             'CHECK_AUTHENTICATE_INSTITUTION': self.CHECK_AUTHENTICATE_INSTITUTION.replace("%", "@@"),
+            'AUTHENTICATE_DELETE': self.AUTHENTICATE_DELETE.replace("%", "@@"),
             'SIGN_INSTUTION': self.SIGN_INSTUTION,
             'CHECK_SIGN_INSTITUTION' : self.CHECK_SIGN_INSTITUTION.replace("%", "@@"),
+            'SIGN_DELETE': self.SIGN_DELETE.replace("%", "@@"),
             'VALIDATE_CERTIFICATE' : self.VALIDATE_CERTIFICATE,
             'VALIDATE_DOCUMENT': self.VALIDATE_DOCUMENT,
             'SUSCRIPTOR_CONNECTED': self.SUSCRIPTOR_CONNECTED,

@@ -83,7 +83,8 @@ Si se desea firmar y revisar estado de la firma.
     QVBUX0NBQ0hFPXRydWU7OwogaCkgbXloZWxwCiAgICBleGl0IDAgOzsKIGVzYWMKZG9uZQoKaWYg
     WyAkQVBUX0NBQ0hFIF07IHRoZW4gCiBlY2hvICJCSU5HTyIgCmZpCgo='''
 
-    sign_resp=c.sign( '04-0212-0119', DOCUMENT.encode(), "resumen ejemplo", _format='xml')
+    sign_resp=c.sign( '04-0212-0119', DOCUMENT.encode(), "resumen ejemplo", _format='xml_cofirma')
+    # _format puede ser xml_cofirma, xml_contrafirma, odf, msoffice
     print(sign_resp)
     c.check_sign(sign_resp['id_transaction'])
 
@@ -95,12 +96,12 @@ Si se desea validar un certificado
 .. code:: python
 
     c.validate(DOCUMENT, 'certificate')
-
+    
 
 Si se desea validar un documento XML
 
 .. code:: python
 
-    c.validate(DOCUMENT, 'xml')
-
+    c.validate(DOCUMENT, 'cofirma')
+    # cofirma, contrafirma, odf, msoffice
 

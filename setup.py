@@ -30,7 +30,7 @@ setup(
     author='Luis Zarate',
     author_email='luis.zarate@solvosoft.com',
     name='dfva-python',
-    version='0.0.1',
+    version='0.0.2',
     description='DFVA client for python.',
     long_description=README,
     url='https://github.com/luisza/dfva_python',
