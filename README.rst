@@ -65,6 +65,8 @@ Si se desea autenticar y revisar estado de la autenticación
     auth_resp = c.authenticate('04-0212-0119')
     print(auth_resp)
     c.check_autenticate(auth_resp['id_transaction'])
+    # eliminando la peticion
+    c.autenticate_delete(auth_resp['id_transaction'])
 
 
 Si se desea revisar si un suscriptor está conectado
@@ -87,7 +89,8 @@ Si se desea firmar y revisar estado de la firma.
     # _format puede ser xml_cofirma, xml_contrafirma, odf, msoffice
     print(sign_resp)
     c.check_sign(sign_resp['id_transaction'])
-
+    # eliminando la peticion
+    c.sign_delete(auth_resp['id_transaction'])
 
 **Nota:** La revisión de estado de la autenticación/firma no es necesaria en servicios web ya que estos son notificados por en la URL de institución proporcionado.
 
