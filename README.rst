@@ -60,11 +60,11 @@ Si se desea autenticar y revisar estado de la autenticación
 
 .. code:: python
 
-    from dfva_python.client import Client
-    c = Client()
+    from dfva_python.client import DfvaClient
+    c = DfvaClient()
     auth_resp = c.authenticate('04-0212-0119')
     print(auth_resp)
-    c.check_autenticate(auth_resp['id_transaction'])
+    c.autenticate_check(auth_resp['id_transaction'])
     # eliminando la peticion
     c.autenticate_delete(auth_resp['id_transaction'])
 
@@ -88,7 +88,7 @@ Si se desea firmar y revisar estado de la firma.
     sign_resp=c.sign( '04-0212-0119', DOCUMENT.encode(), "resumen ejemplo", _format='xml_cofirma')
     # _format puede ser xml_cofirma, xml_contrafirma, odf, msoffice
     print(sign_resp)
-    c.check_sign(sign_resp['id_transaction'])
+    c.sign_check(sign_resp['id_transaction'])
     # eliminando la peticion
     c.sign_delete(auth_resp['id_transaction'])
 
@@ -101,10 +101,10 @@ Si se desea validar un certificado
     c.validate(DOCUMENT, 'certificate')
     
 
-Si se desea validar un documento XML
+Si se desea validar un documento
 
 .. code:: python
 
-    c.validate(DOCUMENT, 'cofirma')
-    # cofirma, contrafirma, odf, msoffice
+    c.validate(DOCUMENT, 'document', 'cofirma')
+    # cofirma, contrafirma, odf, msoffice, pdf
 

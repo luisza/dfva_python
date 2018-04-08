@@ -43,7 +43,7 @@ class Client(object):
 
 
 
-    def check_autenticate(self, code, algorithm=None):
+    def autenticate_check(self, code, algorithm=None):
         algorithm = algorithm or self.settings.ALGORITHM
         data = {
             'institution': self.institution.code,
@@ -141,7 +141,7 @@ class Client(object):
         return data
 
 
-    def check_sign(self, code, algorithm=None):
+    def sign_check(self, code, algorithm=None):
         algorithm = algorithm or self.settings.ALGORITHM
         data = {
             'institution': self.institution.code,
@@ -264,3 +264,123 @@ class Client(object):
         if 'is_connected' in data:
             dev = data['is_connected']
         return dev
+
+class DfvaClient(Client):
+    def __init__(self, settings=Settings()):
+        super(DfvaClient, self).__init__(settings=settings)
+        self.error_sign_auth_data = {"code": "N/D",
+			        "status": 2,
+			        "identification":None,
+			        "id_transaction": 0,
+			        "request_datetime": "",
+			        "sign_document": "",
+			        "expiration_datetime": "",
+			        "received_notification": True,
+			        "duration": 0,
+              "status_text": "Problema de comunicación interna"};
+
+        self.error_validate_data = {"code": "N/D",
+			  "status": 2,
+			  "identification":None,
+			  "received_notification":None,
+        "status_text": "Problema de comunicación interna"};
+
+    def authenticate(self, identification, algorithm = None):
+        try:
+          dev =super(DfvaClient, self).authenticate(identification,
+                                                    algorithm=algorithm)
+        except:
+          dev=self.error_sign_auth_data
+
+        return dev
+
+
+
+    def autenticate_check(self, code, algorithm=None):
+        try:
+          dev =super(DfvaClient, self).autenticate_check(code,
+                                                    algorithm=algorithm)
+        except:
+          dev=self.error_sign_auth_data
+
+        return dev       
+
+
+    def autenticate_delete(self, code, algorithm=None):
+        try:
+          dev =super(DfvaClient, self).autenticate_delete(code,
+                                                    algorithm=algorithm)
+        except:
+          dev=False
+
+        return dev 
+
+
+    def sign(self, identification, document, resume, _format='xml_cofirma', algorithm=None):
+        if _format not in self.settings.SUPPORTED_SIGN_FORMAT:
+            return {
+              "code": "N/D",
+              "status": 12,
+              "identification": None,
+              "id_transaction": 0,
+              "request_datetime": "",
+              "sign_document": "",
+              "expiration_datetime": "",
+              "received_notification": True,
+              "duration": 0,
+              "status_text": "Formato de documento inválido, posibles:"+ ",".join(
+                            self.settings.SUPPORTED_SIGN_FORMAT)
+              };
+        try:
+          dev =super(DfvaClient, self).sign(identification, 
+                                      document, resume, _format=_format, 
+                                      algorithm=algorithm)
+        except:
+          dev=self.error_sign_auth_data
+
+        return dev 
+
+
+    def sign_check(self, code, algorithm=None):
+        try:
+          dev =super(DfvaClient, self).sign_check(code, algorithm=algorithm)
+        except:
+          dev=self.error_sign_auth_data
+        return dev  
+
+    def sign_delete(self, code, algorithm=None):
+        try:
+          dev = super(DfvaClient, self).sign_delete(code, algorithm=algorithm)
+        except:
+          dev=False
+        return dev 
+
+    def validate(self, document, _type, algorithm=None, _format=None):
+        if _format is not None and _format not in self.settings.SUPPORTED_VALIDATE_FORMAT:
+            return {"code": "N/D",
+			              "status": 14,
+			              "identification": None,
+			              "received_notification": None,
+                    "status_text": "Formato inválido posibles: "+ ",".join(
+                             self.settings.SUPPORTED_VALIDATE_FORMAT)
+                    };
+        try:
+          dev =super(DfvaClient, self).validate(document, _type,
+                                                    algorithm=algorithm,
+                                                    _format=_format)
+        except:
+          dev=self.error_validate_data
+
+        return dev
+
+
+    def is_suscriptor_connected(self, identification, algorithm=None):
+        try:
+          dev =super(DfvaClient, self).is_suscriptor_connected(identification,
+                                                    algorithm=algorithm)
+        except:
+          dev=False
+
+        return dev 
+
+
