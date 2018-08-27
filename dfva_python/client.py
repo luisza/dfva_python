@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger('dfva_python')
 
 
-class Client(object):
+class InternalClient(object):
     def __init__(self, settings=Settings()):
         if not settings.SETTINGS_LOADED:
             settings.load_settings_from_file()
@@ -322,7 +322,7 @@ class Client(object):
         logger.debug("Notify decrypted: %r"%(data,) )
         return data
 
-class DfvaClient(Client):
+class Client(InternalClient):
     def __init__(self, settings=Settings()):
         super(DfvaClient, self).__init__(settings=settings)
         self.error_sign_auth_data = {"code": "N/D",
