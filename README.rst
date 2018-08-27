@@ -60,20 +60,20 @@ Si se desea autenticar y revisar estado de la autenticación
 
 .. code:: python
 
-    from dfva_python.client import DfvaClient
-    c = DfvaClient()
-    auth_resp = c.authenticate('04-0212-0119')
+    from dfva_python.client import Client
+    client = Client()
+    auth_resp = client.authenticate('04-0212-0119')
     print(auth_resp)
-    c.autenticate_check(auth_resp['id_transaction'])
+    client.autenticate_check(auth_resp['id_transaction'])
     # eliminando la peticion
-    c.autenticate_delete(auth_resp['id_transaction'])
+    client.autenticate_delete(auth_resp['id_transaction'])
 
 
 Si se desea revisar si un suscriptor está conectado
 
 .. code:: python
 
-    c.is_suscriptor_connected('04-0777-08888')
+    client.is_suscriptor_connected('04-0777-08888')
 
 
 Si se desea firmar y revisar estado de la firma.
@@ -85,12 +85,12 @@ Si se desea firmar y revisar estado de la firma.
     QVBUX0NBQ0hFPXRydWU7OwogaCkgbXloZWxwCiAgICBleGl0IDAgOzsKIGVzYWMKZG9uZQoKaWYg
     WyAkQVBUX0NBQ0hFIF07IHRoZW4gCiBlY2hvICJCSU5HTyIgCmZpCgo='''
 
-    sign_resp=c.sign( '04-0212-0119', DOCUMENT.encode(), "resumen ejemplo", _format='xml_cofirma')
+    sign_resp=client.sign( '04-0212-0119', DOCUMENT.encode(), "resumen ejemplo", _format='xml_cofirma')
     # _format puede ser xml_cofirma, xml_contrafirma, odf, msoffice
     print(sign_resp)
-    c.sign_check(sign_resp['id_transaction'])
+    client.sign_check(sign_resp['id_transaction'])
     # eliminando la peticion
-    c.sign_delete(auth_resp['id_transaction'])
+    client.sign_delete(auth_resp['id_transaction'])
 
 **Nota:** La revisión de estado de la autenticación/firma no es necesaria en servicios web ya que estos son notificados por en la URL de institución proporcionado.
 
@@ -98,13 +98,13 @@ Si se desea validar un certificado
 
 .. code:: python
 
-    c.validate(DOCUMENT, 'certificate')
+    client.validate(DOCUMENT, 'certificate')
     
 
 Si se desea validar un documento
 
 .. code:: python
 
-    c.validate(DOCUMENT, 'document', 'cofirma')
+    client.validate(DOCUMENT, 'document', 'cofirma')
     # cofirma, contrafirma, odf, msoffice, pdf
 
