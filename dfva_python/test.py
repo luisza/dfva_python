@@ -5,12 +5,13 @@ Created on 2 nov. 2017
 '''
 
 
-from dfva_python.client import DfvaClient
-c = DfvaClient()
+from dfva_python.client import Client
+c = Client()
 
 print("Authenticate:")
 auth_resp = c.authenticate('04-0212-0119')
 print(auth_resp)
+"""
 auth_check_resp=c.autenticate_check(auth_resp['id_transaction'])
 print(auth_check_resp)
 print("\n\nSIGN:")
@@ -34,3 +35,4 @@ print(validate_doc_resp)
 print("\n\nIS connected:")
 is_connect=c.is_suscriptor_connected('04-0212-0119')
 print(is_connect)
+"""

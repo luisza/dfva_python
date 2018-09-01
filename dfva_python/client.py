@@ -17,6 +17,19 @@ class InternalClient(object):
         self.institution = settings.get_institution()
         self.tz= pytz.timezone(self.settings.TIMEZONE)
 
+    def decrypt(self, data, algorithm):
+        datahash = data['data_hash']
+        data = decrypt(self.institution.private_key, data['data'], as_str=False)
+        newhash = get_hash_sum(data,  algorithm)
+        if newhash != datahash:
+            data = json.dumps({"code":"N/D",
+                "status": -2,
+                "identification": None,
+                "received_notification": None,
+                "status_text": "Problema: suma hash difiere"}).encode()
+        data = json.loads(data.decode())
+        return data
+
     def authenticate(self, identification, algorithm = None):
         algorithm = algorithm or self.settings.ALGORITHM 
         logger.info("Info authenticate: %s %r"%(identification, algorithm))
@@ -47,7 +60,7 @@ class InternalClient(object):
 
         data = result.json()
         logger.debug("Received authenticate: %r"%(data,) )
-        data = decrypt(self.institution.private_key, data['data'])
+        data = self.decrypt(data,  algorithm)
         logger.debug("Decrypted authenticate: %r"%(data,) )
         return data
 
@@ -83,7 +96,7 @@ class InternalClient(object):
 
         data = result.json()
         logger.debug("Received check authenticate: %r"%(data,) )
-        data = decrypt(self.institution.private_key, data['data'])
+        data = self.decrypt(data,  algorithm)
         logger.debug("Decrypted check authenticate: %r"%(data,) )
         return data    
 
@@ -117,7 +130,7 @@ class InternalClient(object):
 
         data = result.json()
         logger.debug("Received delete authenticate: %r"%(data,) )
-        data = decrypt(self.institution.private_key, data['data'])
+        data = self.decrypt(data,  algorithm)
         logger.debug("Decrypted delete authenticate: %r"%(data,) )
         return data['result'] if 'result' in data else False
 
@@ -164,7 +177,7 @@ class InternalClient(object):
         # print(params)
         data = result.json()
         logger.debug("Received sign: %r"%(data,) )
-        data = decrypt(self.institution.private_key, data['data'])
+        data = self.decrypt(data,  algorithm)
         logger.debug("Decrypted sign: %r"%(data,) )
 
         return data
@@ -198,7 +211,7 @@ class InternalClient(object):
 
         data = result.json()
         logger.debug("Received check sign: %r"%(data,) )
-        data = decrypt(self.institution.private_key, data['data'])
+        data = self.decrypt(data,  algorithm)
         logger.debug("Decrypted check sign: %r"%(data,) )
 
         return data
@@ -232,7 +245,7 @@ class InternalClient(object):
         data = result.json()
 
         logger.debug("Received delete sign: %r"%(data,) )
-        data = decrypt(self.institution.private_key, data['data'])
+        data = self.decrypt(data,  algorithm)
         logger.debug("Decrypted delete sign: %r"%(data,) )
 
         return data['result'] if 'result' in data else False
@@ -277,7 +290,7 @@ class InternalClient(object):
 
         data = result.json()
         logger.debug("Received validate: %r"%(data,) )
-        data = decrypt(self.institution.private_key, data['data'])
+        data = self.decrypt(data,  algorithm)
         logger.debug("Decrypted validate: %r"%(data,) )
         return data
 
@@ -318,13 +331,13 @@ class InternalClient(object):
 
     def get_notify_data(self, data):
         logger.debug("notify: %r"%(data,) )
-        data = decrypt(self.institution.private_key, data['data'])
+        data = self.decrypt(data,  algorithm)
         logger.debug("Notify decrypted: %r"%(data,) )
         return data
 
 class Client(InternalClient):
     def __init__(self, settings=Settings()):
-        super(DfvaClient, self).__init__(settings=settings)
+        super(Client, self).__init__(settings=settings)
         self.error_sign_auth_data = {"code": "N/D",
 			        "status": 2,
 			        "identification":None,
@@ -344,7 +357,7 @@ class Client(InternalClient):
 
     def authenticate(self, identification, algorithm = None):
         try:
-          dev =super(DfvaClient, self).authenticate(identification,
+          dev =super(Client, self).authenticate(identification,
                                                     algorithm=algorithm)
         except Exception as e:
           logger.error("authenticate %r"%(e))
@@ -356,7 +369,7 @@ class Client(InternalClient):
 
     def authenticate_check(self, code, algorithm=None):
         try:
-          dev =super(DfvaClient, self).authenticate_check(code,
+          dev =super(Client, self).authenticate_check(code,
                                                     algorithm=algorithm)
         except Exception as e:
           logger.error("authenticate check %r"%(e))
@@ -367,7 +380,7 @@ class Client(InternalClient):
 
     def authenticate_delete(self, code, algorithm=None):
         try:
-          dev =super(DfvaClient, self).authenticate_delete(code,
+          dev =super(Client, self).authenticate_delete(code,
                                                     algorithm=algorithm)
         except Exception as e:
           logger.error("authenticate delete %r"%(e))
@@ -392,7 +405,7 @@ class Client(InternalClient):
                     ",".join(self.settings.SUPPORTED_SIGN_FORMAT)
               };
         try:
-          dev =super(DfvaClient, self).sign(identification, 
+          dev =super(Client, self).sign(identification, 
                                       document, resume, _format=_format, 
                                       algorithm=algorithm)
         except Exception as e:
@@ -404,7 +417,7 @@ class Client(InternalClient):
 
     def sign_check(self, code, algorithm=None):
         try:
-          dev =super(DfvaClient, self).sign_check(code, algorithm=algorithm)
+          dev =super(Client, self).sign_check(code, algorithm=algorithm)
         except Exception as e:
           logger.error("Sign check %r"%(e))
           dev=self.error_sign_auth_data
@@ -412,7 +425,7 @@ class Client(InternalClient):
 
     def sign_delete(self, code, algorithm=None):
         try:
-          dev = super(DfvaClient, self).sign_delete(code, algorithm=algorithm)
+          dev = super(Client, self).sign_delete(code, algorithm=algorithm)
         except Exception as e:
           logger.error("Sign delete %r"%(e))
           dev=False
@@ -428,7 +441,7 @@ class Client(InternalClient):
                     ",".join(self.settings.SUPPORTED_VALIDATE_FORMAT)
                     };
         try:
-          dev =super(DfvaClient, self).validate(document, _type,
+          dev =super(Client, self).validate(document, _type,
                                                     algorithm=algorithm,
                                                     _format=_format)
         except Exception as e:
@@ -440,7 +453,7 @@ class Client(InternalClient):
 
     def is_suscriptor_connected(self, identification, algorithm=None):
         try:
-          dev =super(DfvaClient, self).is_suscriptor_connected(identification,
+          dev =super(Client, self).is_suscriptor_connected(identification,
                                                     algorithm=algorithm)
         except Exception as e:
           logger.error("Suscriptor connected %r"%(e))
@@ -451,7 +464,7 @@ class Client(InternalClient):
     def get_notify_data(self, data):
         dev = {}
         try:
-            dev =super(DfvaClient, self).get_notify_data(data)
+            dev =super(Client, self).get_notify_data(data)
         except Exception as e:
           logger.error("Notify data %r"%(e))
 
