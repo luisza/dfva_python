@@ -7,7 +7,7 @@ Created on 1 nov. 2017
 import configparser
 import os
 import stat
-
+from os.path import expanduser
 
 class Institution:
     server_public_key=None
@@ -43,9 +43,10 @@ class Settings(dict):
     SETTINGS_LOADED=False
     
     def __init__(self):
+
+        home = expanduser("~")
         self.config = configparser.ConfigParser()
-        self.settings_file_path = os.path.join(
-            os.environ.get('HOME'), ".dfva_python")
+        self.settings_file_path = os.path.join(home, ".dfva_python")
         self.settings_file_name = "client.conf"
         
         # If file not exists then create a config file
