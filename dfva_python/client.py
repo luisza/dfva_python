@@ -13,9 +13,9 @@ class InternalClient(object):
     def __init__(self, settings=Settings()):
         if not settings.SETTINGS_LOADED:
             settings.load_settings_from_file()
-        self.settings=settings
+        self.settings = settings
         self.institution = settings.get_institution()
-        self.tz= pytz.timezone(self.settings.TIMEZONE)
+        self.tz = pytz.timezone(self.settings.TIMEZONE)
 
     def decrypt(self, data, algorithm):
         datahash = data['data_hash']
@@ -68,7 +68,7 @@ class InternalClient(object):
 
     def authenticate_check(self, code, algorithm=None):
         algorithm = algorithm or self.settings.ALGORITHM
-        logger.info("check authenticate: %s %r %r"%(identification, code, algorithm))
+        logger.info("check authenticate:   %r %r"%(code, algorithm))
         data = {
             'institution': self.institution.code,
             'notification_url': self.institution.url_notify or 'N/D',
@@ -185,7 +185,7 @@ class InternalClient(object):
 
     def sign_check(self, code, algorithm=None):
         algorithm = algorithm or self.settings.ALGORITHM
-        logger.info("check sign: %s %r %r"%(identification, code, algorithm))
+        logger.info("check sign:  %r %r"%( code, algorithm))
         data = {
             'institution': self.institution.code,
             'notification_url': self.institution.url_notify or 'N/D',
@@ -335,25 +335,31 @@ class InternalClient(object):
         logger.debug("Notify decrypted: %r"%(data,) )
         return data
 
+
 class Client(InternalClient):
     def __init__(self, settings=Settings()):
         super(Client, self).__init__(settings=settings)
-        self.error_sign_auth_data = {"code": "N/D",
-			        "status": 2,
-			        "identification":None,
-			        "id_transaction": 0,
-			        "request_datetime": "",
-			        "sign_document": "",
-			        "expiration_datetime": "",
-			        "received_notification": True,
-			        "duration": 0,
-              "status_text": "Problema de comunicación interna"};
+        self.error_sign_auth_data = {
+            "code": "N/D",
+            "status": 2,
+            "identification":None,
+            "id_transaction": 0,
+            "request_datetime": "",
+            "sign_document": "",
+            "expiration_datetime": "",
+            "received_notification": True,
+            "duration": 0,
+            "status_text": "Problema de comunicación interna"
+            }
 
-        self.error_validate_data = {"code": "N/D",
-			  "status": 2,
-			  "identification":None,
-			  "received_notification":None,
-        "status_text": "Problema de comunicación interna"};
+        self.error_validate_data = {
+            "code": "N/D",
+			"status": 2,
+			"identification": None,
+			"received_notification": None,
+            "status_text": "Problema de comunicación interna"
+            }
+
 
     def authenticate(self, identification, algorithm = None):
         try:
