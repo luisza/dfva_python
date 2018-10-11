@@ -64,9 +64,9 @@ Si se desea autenticar y revisar estado de la autenticación
     client = Client()
     auth_resp = client.authenticate('04-0212-0119')
     print(auth_resp)
-    client.autenticate_check(auth_resp['id_transaction'])
+    client.authenticate_check(auth_resp['id_transaction'])
     # eliminando la peticion
-    client.autenticate_delete(auth_resp['id_transaction'])
+    client.authenticate_delete(auth_resp['id_transaction'])
 
 
 Si se desea revisar si un suscriptor está conectado
@@ -108,3 +108,28 @@ Si se desea validar un documento
     client.validate(DOCUMENT, 'document', 'cofirma')
     # cofirma, contrafirma, odf, msoffice, pdf
 
+
+Running tests
+----------------
+
+Necesita instalar el gestor de pruebas 
+
+.. code:: python
+
+    pip install nose
+
+
+Ejecute el simulador de FVA BCCR  y su cliente de celery
+
+EN FVA BCCR ejecute 
+
+.. code:: bash
+
+    python manage.py runserver 8001
+    celery worker -A fva_bccr -BE
+
+Por último ejecute las pruebas
+
+.. code:: bash
+
+    nosetests dfva_python/test.py
