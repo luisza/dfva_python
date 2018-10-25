@@ -126,10 +126,26 @@ EN FVA BCCR ejecute
 .. code:: bash
 
     python manage.py runserver 8001
-    celery worker -A fva_bccr -BE
+    celery  -A fva_bccr worker  -l info
+
+Puede ejecutar además celery beat  para mayor exactitud, 
+('''celery  -A fva_bccr worker -BE -l info'''), aunque puede causar inestabilidad
+en las pruebas.  También es importante acceder a http://localhost:8001/admin/constance/config/
+y habilitar `USE_UNITEST` para que no espere el `TASK_WAIT_TO_RESPONSE`  definido o 
+poner un `TASK_WAIT_TO_RESPONSE`  bajo como 1 segundo.
+
+
 
 Por último ejecute las pruebas
 
 .. code:: bash
 
-    nosetests dfva_python/test.py
+    nosetests dfva_python.tests
+
+
+Además se incluye un utilitario para generar las combinaciones de las pruebas
+con la finalidad de hacer más simple la codificación de los diferentes casos
+
+.. code:: python
+    from dfva_python.utils_test import build_test_document_python
+    build_test_document_python("TestAuthenticate")

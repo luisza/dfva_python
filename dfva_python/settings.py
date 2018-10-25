@@ -36,14 +36,14 @@ class Settings(dict):
     SUPPORTED_SIGN_FORMAT = ['xml_cofirma',
                              'xml_contrafirma', 'odf', 'msoffice', 'pdf']
     SUPPORTED_VALIDATE_FORMAT = [
-        'certificate', 'cofirma', 'contrafirma', 'odf', 'msoffice', 'pdf']
+        'certificate', 'xml', 'odf', 'msoffice', 'pdf']
 
     SERVER_PUBLIC_KEY = ''
     PUBLIC_CERTIFICATE = ''
     CODE = ''
     PRIVATE_KEY = ''
     URL_NOTIFY = 'N/D'
-
+    LOGGING_ENCRYPTED_DATA = False
     SETTINGS_LOADED = False
 
     def __init__(self):
@@ -54,7 +54,8 @@ class Settings(dict):
         self.settings_file_name = "client.conf"
 
         # If file not exists then create a config file
-        if not os.path.exists(os.path.join(self.settings_file_path, self.settings_file_name)):
+        if not os.path.exists(os.path.join(self.settings_file_path,
+                                           self.settings_file_name)):
             self.save()
 
     def get_institution(self):
@@ -87,8 +88,8 @@ class Settings(dict):
 
     def save(self):
         self.config['general'] = {
-            'TIMEZONE': self.TIMEZONE
-
+            'TIMEZONE': self.TIMEZONE,
+            'LOGGING_ENCRYPTED_DATA':  self.LOGGING_ENCRYPTED_DATA
         }
 
         self.config['DFVA'] = {
@@ -118,7 +119,9 @@ class Settings(dict):
         if not os.path.exists(self.settings_file_path):
             os.mkdir(self.settings_file_path)
 
-        with open(os.path.join(self.settings_file_path, self.settings_file_name), "w") as configfile:
+        with open(os.path.join(self.settings_file_path,
+                               self.settings_file_name),
+                  "w") as configfile:
             self.config.write(configfile)
         os.chmod(os.path.join(self.settings_file_path,
                               self.settings_file_name), stat.S_IRWXU)
