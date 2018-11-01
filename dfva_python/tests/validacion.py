@@ -34,7 +34,6 @@ class TestValidateCertificates (unittest.TestCase):
                           post_read_fn=CERT_FUNC)
         result = valclient.validate(cert, 'certificate')
         data = self.experated[identification]
-        print('wass_success', data[2], repr(result))
         self.assertEqual(result['status'], data[1])
         if data[2]:
             self.assertEqual(result['full_name'], data[0])
@@ -108,7 +107,6 @@ class TestValidateDocuments(unittest.TestCase):
     def do_check(self, _format, filename):
         document = read_files(filename).decode()
         result = valclient.validate(document, 'document', _format=_format)
-        print(result)
         extracted_errors = self.extract_codes(result['errors'])
         extracted_signers = self.prepare_names(result['signers'])
 
