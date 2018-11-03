@@ -5,7 +5,7 @@ from .utils import DOCUMENT_RESPONSE_TABLE, DOCUMENT_FORMATS, read_files, \
     TIMEWAIT, FORMAT_WAIT
 
 
-ALLOWED_TEST = {}
+ALLOWED_TEST = {} #{"01-1919-2020": ["pdf"]}
 transactions = {}
 
 client = Client()
@@ -15,14 +15,17 @@ def load_signdocuments():
     for identification in DOCUMENT_RESPONSE_TABLE.keys():
         for _format in DOCUMENT_FORMATS:
             if ALLOWED_TEST:
-                if not (identification in self.ALLOWED_TEST and
+                if not (identification in ALLOWED_TEST and
                         _format in ALLOWED_TEST[identification]):
                     continue
             auth_resp = client.sign(
                 identification,
                 read_files(_format),
                 "test %s" % (_format),
-                _format=_format)
+                _format=_format,
+                reason="Test" if _format == 'pdf' else None,
+                place="algún lugar de la mancha" if _format == 'pdf' else None,
+                )
             if identification not in transactions:
                 transactions[identification] = {}
             transactions[identification][_format] = auth_resp
@@ -51,7 +54,7 @@ class TestDocumentReceived (unittest.TestCase):
 
     def do_checks(self, _format, identification):
         if ALLOWED_TEST:
-            if not (identification in self.ALLOWED_TEST and
+            if not (identification in ALLOWED_TEST and
                     _format in ALLOWED_TEST[identification]):
                 return
 
@@ -67,6 +70,8 @@ class TestDocumentReceived (unittest.TestCase):
                 'id_transaction'])
         self.assertEqual(DOCUMENT_RESPONSE_TABLE[identification][3],
                          res['status'])
+        client.sign_delete(transactions[identification][_format][
+                'id_transaction'])
 
     def test_xml_cofirma_0180809090(self):
         self.do_checks("xml_cofirma", "01-8080-9090")

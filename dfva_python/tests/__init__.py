@@ -1,3 +1,3 @@
-from .document import *
-from .authentification import *
-from .validacion import *
+from .signer import *
+from .authentication import *
+from .validation import *

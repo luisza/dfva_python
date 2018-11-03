@@ -56,11 +56,15 @@ class TestAuthentication (unittest.TestCase):
             'id_transaction'])
         self.assertEqual(AUTHENTICATION_RESPONSE_TABLE[identification][3],
                          res['status'])
+        delauth = authclient.authenticate_delete(
+            authtransactions[identification]['id_transaction'])
+        self.assertEqual(delauth, True)
 
     def test_common_auth(self):
         auth_resp = authclient.authenticate('88-8888-8888')
-        self.assertEqual(auth_resp['status'], 1)
+        self.assertEqual(auth_resp['status'], 0)
         self.assertNotEqual(auth_resp['id_transaction'], 0)
+        authclient.authenticate_delete(auth_resp['id_transaction'])
 
     def test_auth_0119192020(self):
         self.do_checks("01-1919-2020")

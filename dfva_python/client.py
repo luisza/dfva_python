@@ -109,7 +109,7 @@ class InternalClient(object):
 
     def authenticate_delete(self, code, algorithm=None):
         algorithm = algorithm or self.settings.ALGORITHM
-        logger.info("Delete authenticate: %s %r" % (identification, algorithm))
+        logger.info("Delete authenticate: %r %r" % (code, algorithm))
         data = {
             'institution': self.institution.code,
             'notification_url': self.institution.url_notify or 'N/D',
@@ -145,7 +145,8 @@ class InternalClient(object):
         return data['result'] if 'result' in data else False
 
     def sign(self, identification,
-             document, resume, _format='xml_cofirma', algorithm=None):
+             document, resume, _format='xml_cofirma', algorithm=None,
+             place=None, reason=None):
         algorithm = algorithm or self.settings.ALGORITHM
         logger.info("Info sign: %s %s %s %r" % (identification, resume,
                                                 _format, algorithm))
@@ -162,6 +163,9 @@ class InternalClient(object):
             'resumen': resume,
             'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
         }
+        if _format == 'pdf':
+            data['reason'] = reason
+            data['place'] = place
 
         str_data = json.dumps(data)
         logger.debug("Data sign: %s " % (str_data,))
@@ -231,7 +235,7 @@ class InternalClient(object):
 
     def sign_delete(self, code, algorithm=None):
         algorithm = algorithm or self.settings.ALGORITHM
-        logger.info("Delete sign: %s %r" % (identification, algorithm))
+        logger.info("Delete sign: %r %r" % (code, algorithm))
         data = {
             'institution': self.institution.code,
             'notification_url': self.institution.url_notify or 'N/D',
@@ -413,7 +417,7 @@ class Client(InternalClient):
         return dev
 
     def sign(self, identification, document, resume, _format='xml_cofirma',
-             algorithm=None):
+             algorithm=None, place=None, reason=None):
         if _format not in self.settings.SUPPORTED_SIGN_FORMAT:
             return {
                 "code": "N/D",
@@ -428,10 +432,24 @@ class Client(InternalClient):
                 "status_text": "Formato de documento inválido, posibles:" +
                 ",".join(self.settings.SUPPORTED_SIGN_FORMAT)
             }
+        if _format == 'pdf' and (reason is None or place is None):
+            return {
+                "code": "N/D",
+                "status": 13,
+                "identification": None,
+                "id_transaction": 0,
+                "request_datetime": "",
+                "sign_document": "",
+                "expiration_datetime": "",
+                "received_notification": True,
+                "duration": 0,
+                "status_text": "Firma pdf sin lugar o razón de firma"
+            }
         try:
             dev = super(Client, self).sign(identification,
                                            document, resume, _format=_format,
-                                           algorithm=algorithm)
+                                           algorithm=algorithm,
+                                           place=place, reason=reason)
         except Exception as e:
             logger.error("Sign %r" % (e))
             dev = self.error_sign_auth_data
