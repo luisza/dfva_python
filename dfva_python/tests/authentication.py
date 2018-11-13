@@ -2,7 +2,9 @@ import time
 import unittest
 from dfva_python.client import Client
 from .utils import AUTHENTICATION_RESPONSE_TABLE, TIMEWAIT, AUTH_WAIT
+import os
 
+TEST_WITH_BCCR = os.getenv('TEST_WITH_BCCR', '') == 'True'
 AUTH_ALLOWED_TEST = []
 
 authtransactions = {}
@@ -39,7 +41,8 @@ class TestAuthentication (unittest.TestCase):
         load_authentication()
         time.sleep(TIMEWAIT)
         print("Recuerde modificar los archivos de configuración y registrar " +
-              "la institución en dfva")
+              "la institución en dfva\n" +
+              "export TEST_WITH_BCCR=True si se ejecuta con el BCCR")
 
     def do_checks(self, identification):
         if AUTH_ALLOWED_TEST and identification not in AUTH_ALLOWED_TEST:
@@ -61,6 +64,9 @@ class TestAuthentication (unittest.TestCase):
         self.assertEqual(delauth, True)
 
     def test_common_auth(self):
+        # BCCR have not 88-8888-8888 identififcation
+        if TEST_WITH_BCCR:
+            return
         auth_resp = authclient.authenticate('88-8888-8888')
         self.assertEqual(auth_resp['status'], 0)
         self.assertNotEqual(auth_resp['id_transaction'], 0)

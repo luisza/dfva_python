@@ -5,7 +5,7 @@ from .utils import DOCUMENT_RESPONSE_TABLE, DOCUMENT_FORMATS, read_files, \
     TIMEWAIT, FORMAT_WAIT
 
 
-ALLOWED_TEST = {} #{"01-1919-2020": ["pdf"]}
+ALLOWED_TEST = {}#{"01-8080-9090": ["pdf", 'msoffice', 'xml_cofirma']}
 transactions = {}
 
 client = Client()
