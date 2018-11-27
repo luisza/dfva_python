@@ -149,3 +149,11 @@ con la finalidad de hacer más simple la codificación de los diferentes casos
 .. code:: python
     from dfva_python.utils_test import build_test_document_python
     build_test_document_python("TestAuthenticate")
+
+
+Esto podría ser util para correr las pruebas cuando se conecta a BCCR
+
+.. code:: bash
+
+    export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+    export TEST_WITH_BCCR=True

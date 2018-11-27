@@ -5,7 +5,7 @@ import requests
 import pytz
 from dfva_python.settings import Settings
 import logging
-
+from base64 import b64encode
 logger = logging.getLogger('dfva_python')
 
 
@@ -152,10 +152,11 @@ class InternalClient(object):
                                                 _format, algorithm))
         if type(document) == str:
             document = document.encode()
+        b64document = b64encode(document).decode()
         data = {
             'institution': self.institution.code,
             'notification_url': self.institution.url_notify or 'N/D',
-            'document': document.decode(),
+            'document': b64document,
             'format': _format,
             'algorithm_hash': algorithm,
             'document_hash': get_hash_sum(document,  algorithm),

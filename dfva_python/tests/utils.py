@@ -50,7 +50,7 @@ DOCUMENT_FORMATS = ['xml_cofirma', 'xml_contrafirma',
 
 
 def read_files(_format, doc_path="dfva_testdocument/files",
-               post_read_fn=b64encode, name='test.'):
+               post_read_fn=lambda x: x, name='test.'):
     defaultpath = os.path.join(os.path.dirname(BASE_DIR), doc_path)
     f = None
     fpath = None
