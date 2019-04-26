@@ -140,7 +140,7 @@ Por último ejecute las pruebas
 
 .. code:: bash
 
-    nosetests dfva_python.tests
+    nosetests -v --nocapture dfva_python.tests
 
 
 Además se incluye un utilitario para generar las combinaciones de las pruebas

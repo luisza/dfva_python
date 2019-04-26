@@ -102,4 +102,5 @@ ENV/
 .project
 .pydevproject
 .settings/
+dfva_python/docs_by_size/
 

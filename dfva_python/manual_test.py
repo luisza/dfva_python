@@ -12,7 +12,7 @@ print("Authenticate:")
 auth_resp = c.authenticate('04-0212-0119')
 print(auth_resp)
 """
-auth_check_resp=c.autenticate_check(auth_resp['id_transaction'])
+auth_check_resp=c.authenticate_check(auth_resp['id_transaction'])
 print(auth_check_resp)
 print("\n\nSIGN:")
 

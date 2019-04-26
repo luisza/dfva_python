@@ -4,8 +4,8 @@ from dfva_python.client import Client
 from .utils import DOCUMENT_RESPONSE_TABLE, DOCUMENT_FORMATS, read_files, \
     TIMEWAIT, FORMAT_WAIT
 
-
-ALLOWED_TEST = {}#{"01-8080-9090": ["pdf", 'msoffice', 'xml_cofirma']}
+#{"01-4040-5050": ["pdf"]}
+ALLOWED_TEST = {} #{"9-0000-0000-000": [  'xml_contrafirma', 'pdf'] } #{"500000000000": [  'xml_contrafirma', 'pdf'], '01-1919-2121': ['xml_cofirma', 'msoffice'], '01-6060-7070': ['odf']}
 transactions = {}
 
 client = Client()
@@ -282,3 +282,28 @@ class TestDocumentReceived (unittest.TestCase):
 
     def test_pdf_900000000000(self):
         self.do_checks("pdf", "9-0000-0000-000")
+
+
+class ContrafirmaWrong(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        _format = "xml_contrafirma"
+        auth_resp = client.sign(
+            '03-0110-2020',
+            read_files("xml", name='no_contrafirmado.'),
+            "test %s" % (_format),
+            _format=_format,
+            )
+        transactions['03-0110-2020'] = {}
+        transactions['03-0110-2020']["xml_contrafirma"] = auth_resp
+        if auth_resp['id_transaction'] == 0:
+            raise
+        time.sleep(TIMEWAIT)
+
+    def test_contrafirma_not_ok(self):
+        res = client.sign_check(
+            transactions['03-0110-2020']["xml_contrafirma"]['id_transaction'])
+        self.assertEqual(15, res['status'])
+        client.sign_delete(transactions['03-0110-2020']["xml_contrafirma"][
+                'id_transaction'])

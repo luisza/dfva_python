@@ -34,11 +34,13 @@ def get_digest(digest_name):
         return hashlib.sha512()
 
 
-def get_hash_sum(data, algorithm):
+def get_hash_sum(data, algorithm, b64=False):
     if type(data) == str:
         data = data.encode()
     digest = get_digest(algorithm)
     digest.update(data)
+    if b64:
+        return b64encode(digest.digest()).decode()
     hashsum = digest.hexdigest()
     return hashsum
 

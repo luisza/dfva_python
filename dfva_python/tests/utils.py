@@ -1,8 +1,8 @@
 import os
 from base64 import b64encode
 
-TIMEWAIT = 65
-FORMAT_WAIT = 1
+TIMEWAIT = 6
+FORMAT_WAIT = 2
 AUTH_WAIT = 0.5
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(

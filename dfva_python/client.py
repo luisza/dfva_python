@@ -159,7 +159,7 @@ class InternalClient(object):
             'document': b64document,
             'format': _format,
             'algorithm_hash': algorithm,
-            'document_hash': get_hash_sum(document,  algorithm),
+            'document_hash': get_hash_sum(document,  algorithm, b64=True),
             'identification': identification,
             'resumen': resume,
             'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
@@ -190,7 +190,6 @@ class InternalClient(object):
         result = requests.post(
             url, json=params, headers=headers)
 
-        # print(params)
         data = result.json()
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Received sign: %r" % (data,))
