@@ -6,7 +6,14 @@ import pytz
 from dfva_python.settings import Settings
 import logging
 from base64 import b64encode
+import traceback
+from dfva_python.jmeter_logger import add_jmetter_server
+
 logger = logging.getLogger('dfva_python')
+
+
+class MaxSizeException(Exception):
+    pass
 
 
 class InternalClient(object):
@@ -59,6 +66,7 @@ class InternalClient(object):
         url += self.settings.AUTHENTICATE_INSTITUTION
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Send authenticate: %s --> %r" % (url, params))
+            add_jmetter_server(self.settings, "Authenticate_"+identification, url, params)
         result = requests.post(
             url, json=params)
 
@@ -187,9 +195,16 @@ class InternalClient(object):
         url = self.settings.DFVA_SERVER_URL + self.settings.SIGN_INSTUTION
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Send sign: %s --> %r" % (url, params))
+            add_jmetter_server(self.settings, "Sign_"+_format+"_"+identification, url, params)
+
         result = requests.post(
             url, json=params, headers=headers)
 
+        if result.status_code not in [200, 201]:
+            logger.error("Código de error %r"%result.status_code)
+            logger.error(result.content)
+        if result.status_code == 413:
+            raise MaxSizeException("Documento tiene un tamaño mayor al soportado")
         data = result.json()
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Received sign: %r" % (data,))
@@ -307,6 +322,7 @@ class InternalClient(object):
         url = self.settings.DFVA_SERVER_URL + url
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Send validate: %s --> %r" % (url, params))
+            add_jmetter_server(self.settings, "Validate_"+_type, url, params)
         else:
             logger.debug("Send validate: %s" % (url,))
         result = requests.post(url, json=params, headers=headers)
@@ -357,7 +373,7 @@ class InternalClient(object):
     def get_notify_data(self, data):
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("notify: %r" % (data,))
-        data = self.decrypt(data,  algorithm)
+        data = self.decrypt(data,  self.settings.ALGORITHM)
         logger.debug("Notify decrypted: %r" % (data,))
         return data
 
@@ -391,7 +407,7 @@ class Client(InternalClient):
             dev = super(Client, self).authenticate(identification,
                                                    algorithm=algorithm)
         except Exception as e:
-            logger.error("authenticate %r" % (e))
+            logger.error("authenticate %r" % (e), exc_info=True)
             dev = self.error_sign_auth_data
 
         return dev
@@ -401,7 +417,7 @@ class Client(InternalClient):
             dev = super(Client, self).authenticate_check(code,
                                                          algorithm=algorithm)
         except Exception as e:
-            logger.error("authenticate check %r" % (e))
+            logger.error("authenticate check %r" % (e), exc_info=True)
             dev = self.error_sign_auth_data
 
         return dev
@@ -411,7 +427,7 @@ class Client(InternalClient):
             dev = super(Client, self).authenticate_delete(code,
                                                           algorithm=algorithm)
         except Exception as e:
-            logger.error("authenticate delete %r" % (e))
+            logger.error("authenticate delete %r" % (e), exc_info=True)
             dev = False
 
         return dev
@@ -450,8 +466,21 @@ class Client(InternalClient):
                                            document, resume, _format=_format,
                                            algorithm=algorithm,
                                            place=place, reason=reason)
+        except MaxSizeException as me:
+            return {
+                "code": "N/D",
+                "status": 14,
+                "identification": None,
+                "id_transaction": 0,
+                "request_datetime": "",
+                "sign_document": "",
+                "expiration_datetime": "",
+                "received_notification": True,
+                "duration": 0,
+                "status_text": "El documento es demasiado grande para ser procesado"
+            }
         except Exception as e:
-            logger.error("Sign %r" % (e))
+            logger.error("Sign %r" % (e), exc_info=True)
             dev = self.error_sign_auth_data
 
         return dev
@@ -460,7 +489,7 @@ class Client(InternalClient):
         try:
             dev = super(Client, self).sign_check(code, algorithm=algorithm)
         except Exception as e:
-            logger.error("Sign check %r" % (e))
+            logger.error("Sign check %r" % (e), exc_info=True)
             dev = self.error_sign_auth_data
         return dev
 
@@ -487,7 +516,7 @@ class Client(InternalClient):
                                                algorithm=algorithm,
                                                _format=_format)
         except Exception as e:
-            logger.error("Validate %r" % (e))
+            logger.error("Validate %r" % (e), exc_info=True)
             dev = self.error_validate_data
 
         return dev
@@ -498,7 +527,7 @@ class Client(InternalClient):
                 identification,
                 algorithm=algorithm)
         except Exception as e:
-            logger.error("Suscriptor connected %r" % (e))
+            logger.error("Suscriptor connected %r" % (e), exc_info=True)
             dev = False
 
         return dev
@@ -508,6 +537,6 @@ class Client(InternalClient):
         try:
             dev = super(Client, self).get_notify_data(data)
         except Exception as e:
-            logger.error("Notify data %r" % (e))
+            logger.error("Notify data %r" % (e), exc_info=True)
 
         return dev
