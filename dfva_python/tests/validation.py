@@ -140,7 +140,6 @@ class TestValidateDocuments(unittest.TestCase):
         else:
             document = read_files(filename).decode()
         result = valclient.validate(document, 'document', _format=_format)
-        print(result)
         extracted_errors = self.extract_codes(result['errors'])
         extracted_signers = self.prepare_names(result['signers'])
 
