@@ -66,10 +66,12 @@ class InternalClient(object):
         url += self.settings.AUTHENTICATE_INSTITUTION
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Send authenticate: %s --> %r" % (url, params))
+        if self.settings.BUILD_JMETER_TEST:
             add_jmetter_server(self.settings, "Authenticate_"+identification, url, params)
         result = requests.post(
             url, json=params)
-
+#        with open('/tmp/index.html', 'wb') as arch:
+#            arch.write(result.content)
         data = result.json()
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Received authenticate: %r" % (data,))
@@ -195,6 +197,7 @@ class InternalClient(object):
         url = self.settings.DFVA_SERVER_URL + self.settings.SIGN_INSTUTION
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Send sign: %s --> %r" % (url, params))
+        if self.settings.BUILD_JMETER_TEST:
             add_jmetter_server(self.settings, "Sign_"+_format+"_"+identification, url, params)
 
         result = requests.post(
@@ -320,9 +323,10 @@ class InternalClient(object):
                    'Content-Type': 'application/json'}
 
         url = self.settings.DFVA_SERVER_URL + url
+        if self.settings.BUILD_JMETER_TEST:
+            add_jmetter_server(self.settings, "Validate_"+_type, url, params)
         if self.settings.LOGGING_ENCRYPTED_DATA:
             logger.debug("Send validate: %s --> %r" % (url, params))
-            add_jmetter_server(self.settings, "Validate_"+_type, url, params)
         else:
             logger.debug("Send validate: %s" % (url,))
         result = requests.post(url, json=params, headers=headers)

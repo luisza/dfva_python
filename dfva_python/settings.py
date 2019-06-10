@@ -43,6 +43,7 @@ class Settings(dict):
     PRIVATE_KEY = ''
     URL_NOTIFY = 'N/D'
     LOGGING_ENCRYPTED_DATA = False
+    BUILD_JMETER_TEST = False
     SETTINGS_LOADED = False
 
     def __init__(self):
@@ -88,7 +89,8 @@ class Settings(dict):
     def save(self):
         self.config['general'] = {
             'TIMEZONE': self.TIMEZONE,
-            'LOGGING_ENCRYPTED_DATA':  self.LOGGING_ENCRYPTED_DATA
+            'LOGGING_ENCRYPTED_DATA':  self.LOGGING_ENCRYPTED_DATA,
+            'BUILD_JMETER_TEST': self.BUILD_JMETER_TEST
         }
 
         self.config['DFVA'] = {
