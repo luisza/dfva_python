@@ -41,6 +41,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
+    long_description_content_type='text/x-rst'
     
 )
 
