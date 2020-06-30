@@ -35,7 +35,7 @@ def load_signdocuments():
                                                     "01-1919-2020",
                                                     "01-1919-2121",
                                                     "9-0000-0000-000"]:
-                raise
+                raise Exception("ID transaction is not 0 as experected")
         time.sleep(FORMAT_WAIT)
 
 
