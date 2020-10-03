@@ -29,6 +29,9 @@ class Settings(dict):
     SIGN_INSTUTION = '/sign/institution/'
     CHECK_SIGN_INSTITUTION = '/sign/%s/institution_show/'
     SIGN_DELETE = '/sign/%s/institution_delete/'
+    STAMP_INSTUTION = '/stamp/institution/'
+    CHECK_STAMP_INSTITUTION = '/stamp/%s/institution_show/'
+    STAMP_DELETE = '/stamp/%s/institution_delete/'
     VALIDATE_CERTIFICATE = '/validate/institution_certificate/'
     VALIDATE_DOCUMENT = '/validate/institution_document/'
     SUSCRIPTOR_CONNECTED = '/validate/institution_suscriptor_connected/'
@@ -102,6 +105,9 @@ class Settings(dict):
             'SIGN_INSTUTION': self.SIGN_INSTUTION,
             'CHECK_SIGN_INSTITUTION': self.CHECK_SIGN_INSTITUTION.replace("%", "@@"),
             'SIGN_DELETE': self.SIGN_DELETE.replace("%", "@@"),
+            'STAMP_INSTUTION': self.STAMP_INSTUTION,
+            'CHECK_STAMP_INSTITUTION': self.CHECK_STAMP_INSTITUTION.replace("%", "@@"),
+            'STAMP_DELETE': self.STAMP_DELETE.replace("%", "@@"),
             'VALIDATE_CERTIFICATE': self.VALIDATE_CERTIFICATE,
             'VALIDATE_DOCUMENT': self.VALIDATE_DOCUMENT,
             'SUSCRIPTOR_CONNECTED': self.SUSCRIPTOR_CONNECTED,
