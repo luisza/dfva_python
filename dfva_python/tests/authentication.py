@@ -5,7 +5,7 @@ from .utils import AUTHENTICATION_RESPONSE_TABLE, TIMEWAIT, AUTH_WAIT
 import os
 
 TEST_WITH_BCCR = os.getenv('TEST_WITH_BCCR', '') == 'True'
-AUTH_ALLOWED_TEST = []
+AUTH_ALLOWED_TEST = [] #["01-1100-2211"]
 
 authtransactions = {}
 authclient = Client()
@@ -15,6 +15,7 @@ def load_authentication():
     for identification in AUTHENTICATION_RESPONSE_TABLE.keys():
         if AUTH_ALLOWED_TEST and identification not in AUTH_ALLOWED_TEST:
             continue
+
         auth_resp = authclient.authenticate(identification)
         authtransactions[identification] = auth_resp
         eq = AUTHENTICATION_RESPONSE_TABLE[identification][1]
@@ -26,7 +27,7 @@ def load_authentication():
             if auth_resp['id_transaction'] == idx:
                 raise
 
-        # time.sleep(AUTH_WAIT)
+        #time.sleep(AUTH_WAIT)
 
 
 # def setUpModule():

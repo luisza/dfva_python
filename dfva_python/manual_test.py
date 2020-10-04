@@ -4,7 +4,7 @@ Created on 2 nov. 2017
 @author: luisza
 '''
 
-
+from time import sleep
 from dfva_python.client import Client
 c = Client()
 """
@@ -23,6 +23,7 @@ WyAkQVBUX0NBQ0hFIF07IHRoZW4gCiBlY2hvICJCSU5HTyIgCmZpCgo='''
 
 stamp_resp=c.stamp(DOCUMENT.encode(), _format='xml_cofirma')
 print(stamp_resp)
+sleep(6)
 stamp_check_resp=c.stamp_check(stamp_resp['id_transaction'])
 print(stamp_check_resp)
 stamp_delete = c.stamp_delete(stamp_resp['id_transaction'])

@@ -289,7 +289,7 @@ class InternalClient(object):
         return data['result'] if 'result' in data else False
 
     def stamp(self, document, _format='xml_cofirma', algorithm=None,
-             place=None, reason=None, eta=None):
+             place=None, reason=None, eta=None, id_functionality=-1):
         algorithm = algorithm or self.settings.ALGORITHM
         logger.info("Info Stamp:  %s %r" % (_format, algorithm))
         if type(document) == str:
@@ -301,6 +301,7 @@ class InternalClient(object):
             'document': b64document,
             'format': _format,
             'algorithm_hash': algorithm,
+            'id_functionality': id_functionality,
             'document_hash': get_hash_sum(document,  algorithm, b64=True),
             'request_datetime': datetime.now(self.tz).strftime("%Y-%m-%d %H:%M:%S"),
         }
@@ -523,7 +524,7 @@ class Client(InternalClient):
             "identification": None,
             "id_transaction": 0,
             "request_datetime": "",
-            "sign_document": "",
+            "signed_document": "",
             "expiration_datetime": "",
             "received_notification": True,
             "duration": 0,
@@ -541,7 +542,7 @@ class Client(InternalClient):
             "status": 2,
             "id_transaction": 0,
             "request_datetime": "",
-            "sign_document": "",
+            "signed_document": "",
             "expiration_datetime": "",
             "received_notification": True,
             "duration": 0,
@@ -586,7 +587,7 @@ class Client(InternalClient):
                 "identification": None,
                 "id_transaction": 0,
                 "request_datetime": "",
-                "sign_document": "",
+                "signed_document": "",
                 "expiration_datetime": "",
                 "received_notification": True,
                 "duration": 0,
@@ -600,7 +601,7 @@ class Client(InternalClient):
                 "identification": None,
                 "id_transaction": 0,
                 "request_datetime": "",
-                "sign_document": "",
+                "signed_document": "",
                 "expiration_datetime": "",
                 "received_notification": True,
                 "duration": 0,
@@ -618,7 +619,7 @@ class Client(InternalClient):
                 "identification": None,
                 "id_transaction": 0,
                 "request_datetime": "",
-                "sign_document": "",
+                "signed_document": "",
                 "expiration_datetime": "",
                 "received_notification": True,
                 "duration": 0,
@@ -647,16 +648,17 @@ class Client(InternalClient):
         return dev
 
     def stamp(self, document, _format='xml_cofirma',
-             algorithm=None, place=None, reason=None, eta=None):
+             algorithm=None, place=None, reason=None, id_functionality=-1, eta=None):
         if _format not in self.settings.SUPPORTED_SIGN_FORMAT:
             return {
                 "status": 12,
                 "id_transaction": 0,
                 "request_datetime": "",
-                "sign_document": "",
+                "signed_document": "",
                 "expiration_datetime": "",
                 "received_notification": True,
                 "duration": 0,
+                "id_functionality": id_functionality,
                 "status_text": "Formato de documento inválido, posibles:" +
                 ",".join(self.settings.SUPPORTED_SIGN_FORMAT)
             }
@@ -665,15 +667,16 @@ class Client(InternalClient):
                 "status": 13,
                 "id_transaction": 0,
                 "request_datetime": "",
-                "sign_document": "",
+                "signed_document": "",
                 "expiration_datetime": "",
                 "received_notification": True,
                 "duration": 0,
+                "id_functionality": id_functionality,
                 "status_text": "Firma pdf sin lugar o razón de firma"
             }
         try:
             dev = super(Client, self).stamp(document, _format=_format, algorithm=algorithm, eta=eta,
-                                           place=place, reason=reason)
+                                           id_functionality=id_functionality, place=place, reason=reason)
         except MaxSizeException as me:
             return {
 
@@ -681,9 +684,10 @@ class Client(InternalClient):
                 "identification": None,
                 "id_transaction": 0,
                 "request_datetime": "",
-                "sign_document": "",
+                "signed_document": "",
                 "expiration_datetime": "",
                 "received_notification": True,
+                "id_functionality": id_functionality,
                 "duration": 0,
                 "status_text": "El documento es demasiado grande para ser procesado"
             }

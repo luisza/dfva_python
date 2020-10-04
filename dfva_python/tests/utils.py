@@ -49,6 +49,15 @@ DOCUMENT_FORMATS = ['xml_cofirma', 'xml_contrafirma',
                     'odf', 'msoffice', 'pdf']
 
 
+DOCUMENT_STAMP_CODE ={
+    '1000': (0, '=', 0, 0),
+    '1001': (1, '=', 0, 1),
+    '1004': (4, '=', 0, 4),
+    '1005': (5, '=', 0, 5),
+    '1007': (7, '=', 0, 7),
+    '1008': (8, '=', 0, 8),
+}
+
 def read_files(_format, doc_path="dfva_testdocument/files",
                post_read_fn=lambda x: x, name='test.'):
     defaultpath = os.path.join(os.path.dirname(BASE_DIR), doc_path)
