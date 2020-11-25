@@ -36,7 +36,7 @@ class Settings(dict):
     VALIDATE_DOCUMENT = '/validate/institution_document/'
     SUSCRIPTOR_CONNECTED = '/validate/institution_suscriptor_connected/'
 
-    SUPPORTED_SIGN_FORMAT = ['cofirma', 'contrafirma', 'odf', 'msoffice', 'pdf']
+    SUPPORTED_SIGN_FORMAT = ['xml_cofirma', 'xml_contrafirma', 'odf', 'msoffice', 'pdf']
     SUPPORTED_VALIDATE_FORMAT = [
         'certificate', 'cofirma','contrafirma', 'odf', 'msoffice', 'pdf']
 
