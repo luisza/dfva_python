@@ -1,4 +1,4 @@
-pytz
-requests==2.20.0
-pycryptodome==3.6.6
-asn1crypto==0.24.0
+pytz>=2024.1
+requests>=2.31.0
+pycryptodome>=3.20.0
+asn1crypto>=1.5.1
